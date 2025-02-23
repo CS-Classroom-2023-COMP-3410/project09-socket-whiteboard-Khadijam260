@@ -7,9 +7,10 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // Allow frontend
+        origin: "*",  // Allow frontend connections
         methods: ["GET", "POST"]
-    }
+    },
+    allowEIO3: true  // Fixes WebSocket handshake issues
 });
 
 // 🛠️ Enable CORS for all Express routes
@@ -43,6 +44,6 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3000, () => {
-    console.log('🚀 Server running on http://localhost:3000');
+server.listen(3000, '0.0.0.0', () => {
+    console.log('🚀 Server running on http://0.0.0.0:3000');
 });

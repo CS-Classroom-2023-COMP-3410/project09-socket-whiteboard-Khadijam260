@@ -1,11 +1,11 @@
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 
 // const socket = io('http://localhost:3000', {
 //     transports: ['websocket'],
 //     withCredentials: true
 // });
 
-const socket = io('http://172.17.0.2:3000', {
+const socket = io('ws://0.0.0.0:3000', {
     transports: ['websocket'], 
     withCredentials: true
 });
@@ -16,13 +16,13 @@ socket.on('connect', () => {
 
 socket.on('connect_error', (err) => console.error('❌ Connection error:', err.message));
 
-socket.on('draw', (data) => {
-    console.log('Received draw data:', data);
-});
+// socket.on('draw', (data) => {
+//     console.log('Received draw data:', data);
+// });
 
-socket.on('clear', () => {
-    console.log('Board cleared');
-});
+// socket.on('clear', () => {
+//     console.log('Board cleared');
+// });
 
 const canvas = document.getElementById('whiteboard');
 const ctx = canvas.getContext('2d');
@@ -33,7 +33,8 @@ let drawing = false;
 
 function startDrawing(e) {
     drawing = true;
-    draw(e);
+    ctx.beginPath();  // 🔹 Reset path when the user starts drawing
+    ctx.moveTo(e.clientX, e.clientY);
 }
 
 function endDrawing() {
@@ -43,27 +44,32 @@ function endDrawing() {
 
 function draw(e) {
     if (!drawing) return;
+
     const x = e.clientX;
     const y = e.clientY;
-    
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = 'black';
 
     ctx.lineTo(x, y);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
 
+    // Emit drawing data
     socket.emit('draw', { x, y });
 }
+
+
+socket.on('load-board', (boardState) => {
+    boardState.forEach(data => {
+        ctx.lineTo(data.x, data.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(data.x, data.y);
+    });
+});
+
 
 // Listen for incoming drawing events
 socket.on('draw', (data) => {
     ctx.lineTo(data.x, data.y);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(data.x, data.y);
 });
 
 // Clear board functionality
