@@ -30,9 +30,10 @@ io.on('connection', (socket) => {
     socket.emit('load-board', boardState);
 
     socket.on('draw', (data) => {
-        boardState.push(data);
+        boardState.push(data);  // Store full stroke
         socket.broadcast.emit('draw', data);
     });
+    
 
     socket.on('clear', () => {
         boardState = [];
