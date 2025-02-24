@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Realtime Whiteboard</title>
+    <link rel="stylesheet" href="style.css">
     <script defer src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-    <script defer type="module" src="/script.js"></script>
+    <script defer type="module" src="script.js"></script>
 </head>
 <body>
     <canvas id="whiteboard"></canvas>
-    <button id="clear">Clear Board</button>
+
+    <!-- Toolbar for Color Picker and Clear Button -->
+    <div id="toolbar">
+        <input type="color" id="colorPicker" value="#000000">
+        <button id="clear">Clear</button>
+    </div>
 </body>
 </html>

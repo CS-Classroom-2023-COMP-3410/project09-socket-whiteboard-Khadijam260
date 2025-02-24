@@ -1,0 +1,33 @@
+/* Toolbar Styling */
+#toolbar {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Color Picker Styling */
+#colorPicker {
+    width: 40px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Clear Button Styling */
+#clear {
+    padding: 10px 15px;
+    border: none;
+    background: red;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}

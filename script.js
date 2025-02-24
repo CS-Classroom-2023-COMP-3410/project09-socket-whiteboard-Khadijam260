@@ -15,6 +15,14 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const colorPicker = document.getElementById('colorPicker');
+let selectedColor = colorPicker.value; // Default to black
+
+colorPicker.addEventListener('input', (e) => {
+    selectedColor = e.target.value;
+});
+
+
 let drawing = false;
 let lastX = null;
 let lastY = null;
@@ -39,22 +47,25 @@ function draw(e) {
     const x = e.clientX;
     const y = e.clientY;
 
+    ctx.strokeStyle = selectedColor; // Use selected color
     ctx.beginPath();
     ctx.moveTo(lastX, lastY);
     ctx.lineTo(x, y);
     ctx.stroke();
 
-    // Send full stroke data
-    socket.emit('draw', { lastX, lastY, x, y });
+    // Send color data to other clients
+    socket.emit('draw', { lastX, lastY, x, y, color: selectedColor });
 
     lastX = x;
     lastY = y;
 }
 
 
+
 // ✅ Handle board loading for new users
 socket.on('load-board', (boardState) => {
     boardState.forEach((data) => {
+        ctx.strokeStyle = data.color; // Apply saved color
         ctx.beginPath();
         ctx.moveTo(data.lastX, data.lastY);
         ctx.lineTo(data.x, data.y);
@@ -64,6 +75,7 @@ socket.on('load-board', (boardState) => {
 
 // ✅ Handle incoming drawing events
 socket.on('draw', (data) => {
+    ctx.strokeStyle = data.color; // Set the stroke color
     ctx.beginPath();
     ctx.moveTo(data.lastX, data.lastY);
     ctx.lineTo(data.x, data.y);
